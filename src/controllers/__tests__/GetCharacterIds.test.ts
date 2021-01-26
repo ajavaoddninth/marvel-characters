@@ -1,5 +1,6 @@
 import Character from "../../models/Character";
 import getCharacterIds from "../GetCharacterIds";
+import { Response } from "jest-express/lib/response";
 
 describe("Get character IDs", () => {
     let characterService: any;
@@ -10,9 +11,7 @@ describe("Get character IDs", () => {
             characters: jest.fn()
         };
 
-        res = {
-            json: jest.fn()
-        }
+        res = new Response();
     });
 
     it("should get character IDs from the character service", async () => {
