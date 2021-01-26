@@ -6,7 +6,7 @@
   "scripts": {
     "prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
     "build": "tsc",
-    "test": "jest",
+    "test": "jest --watchAll",
     "start": "ts-node-dev src/server.ts"
   },
   "repository": {
@@ -29,6 +29,13 @@
   },
   "dependencies": {
     "express": "^4.17.1"
+  },
+  "jest": {
+    "roots": [ "./src" ],
+    "transform": {
+      "^.+\\.ts$": "ts-jest"
+    },
+    "testRegex": "__tests__/.*\\.test\\.ts$"
   },
   "bugs": {
     "url": "https://github.com/ajavaoddninth/marvel-characters/issues"
