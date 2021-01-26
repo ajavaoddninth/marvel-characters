@@ -3,7 +3,7 @@ import getCharacter from "../GetCharacter";
 import { Request } from "jest-express/lib/request";
 import { Response } from "jest-express/lib/response";
 
-describe("Get character by ID", () => {
+describe("Get character by ID using the controller", () => {
     let characterService: any;
     let req: any;
     let res: any;

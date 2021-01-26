@@ -2,7 +2,7 @@ import Character from "../../models/Character";
 import getCharacterIds from "../GetCharacterIds";
 import { Response } from "jest-express/lib/response";
 
-describe("Get character IDs", () => {
+describe("Get character IDs using the controller", () => {
     let characterService: any;
     let res: any;
 

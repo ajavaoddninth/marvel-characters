@@ -1,4 +1,5 @@
-import express, { Request, Response } from "express";
+import express from "express";
+import getCharacter from "./controllers/GetCharacter";
 import getCharacterIds from "./controllers/GetCharacterIds";
 import MockCharacterService from "./services/MockCharacterService";
 
@@ -10,9 +11,7 @@ const characterRouter = express.Router();
 
 characterRouter.get("/", getCharacterIds(characterService));
 
-characterRouter.get("/:characterId", (req: Request, res: Response) => {
-    res.send(`Route to get character info. Character to get has ID ${req.params.characterId}`);
-});
+characterRouter.get("/:characterId", getCharacter(characterService));
 
 app.use("/characters", characterRouter);
 
