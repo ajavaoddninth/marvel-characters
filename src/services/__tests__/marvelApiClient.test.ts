@@ -71,7 +71,7 @@ describe("Fetch resources using Marvel API", () => {
         expect(formatResource).toBeCalledTimes(50);
     });
 
-    it("should fetch resources from URL with query parameters with a multiple page response", async () => {
+    it("should fetch resources from URL with initial query parameters and a multiple page response", async () => {
         fetchMock
             .mockResolvedValueOnce(new Response(JSON.stringify(MULTIPLE_PAGE_RESPONSE_PAGE_1)))
             .mockResolvedValueOnce(new Response(JSON.stringify(MULTIPLE_PAGE_RESPONSE_PAGE_2)))
