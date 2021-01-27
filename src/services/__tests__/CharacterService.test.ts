@@ -47,17 +47,43 @@ describe("Get characters using the service", () => {
             } as Character
         ];
 
+        const expectedUrl = new URL("http://gateway.marvel.com/v1/public/characters");
+        expectedUrl.searchParams.set("limit", "100");
+
         const sut = new CharacterService(marvelApiClient);
 
         const actualResponse = await sut.characters();
 
         expect(actualResponse).toEqual(expectedResponse);
         expect(marvelApiClient.fetchResources).toBeCalledWith(
-            "http://gateway.marvel.com/v1/public/characters",
+            expectedUrl,
             expect.any(Function));
     });
 });
 
 describe("Get character by ID using the service", () => {
+    it("should get the character that matches given ID using the service", async () => {
+        marvelApiClient.fetchResources.mockResolvedValue([
+            {
+                id: 1,
+                name: "Character 1",
+                description: "Description for Character 1"
+            } as Character
+        ]);
 
+        const expectedResponse = {
+            id: 1,
+            name: "Character 1",
+            description: "Description for Character 1"
+        } as Character;
+
+        const sut = new CharacterService(marvelApiClient);
+
+        const actualResponse = await sut.characterById(1);
+
+        expect(actualResponse).toEqual(expectedResponse);
+        expect(marvelApiClient.fetchResources).toBeCalledWith(
+            new URL("http://gateway.marvel.com/v1/public/characters/1"),
+            expect.any(Function));
+    });
 });

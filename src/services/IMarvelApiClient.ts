@@ -7,6 +7,6 @@ export default interface IMarvelApiClient {
      * @returns A promise containing the list of resources
      */
     fetchResources<TModel>(
-        resourceUrl: string,
+        resourceUrl: URL,
         formatResource: (resource: any) => TModel): Promise<TModel[]>;
 }

@@ -6,19 +6,27 @@ export default class CharacterService implements ICharacterService {
     constructor(
         private client: IMarvelApiClient,
         private rootUrl: string = "http://gateway.marvel.com",
-        private charactersRelativeUrl: string = "v1/public/characters") {}
+        private charactersRelativeUrl: string = "/v1/public/characters") {}
 
     /** @inheritdoc */
     public async characters(): Promise<Character[]> {
+        const url = new URL(this.charactersRelativeUrl, this.rootUrl);
+        url.searchParams.set("limit", "100");
         return this.client.fetchResources<Character>(
-            `${this.rootUrl}/${this.charactersRelativeUrl}`,
+            url,
             this.formatResourceToCharacter
         );
     }
 
     /** @inheritdoc */
     public async characterById(characterId: number): Promise<Character> {
-        throw new Error("Method not implemented.");
+        const models = await this.client.fetchResources<Character>(
+            new URL(`${this.charactersRelativeUrl}/${characterId}`, this.rootUrl),
+            this.formatResourceToCharacter
+        );
+
+        // Expected item count is 1
+        return models.pop();
     }
 
     private formatResourceToCharacter(resource: any): Character {

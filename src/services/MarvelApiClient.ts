@@ -50,25 +50,35 @@ export default class MarvelApiClient implements IMarvelApiClient {
 
     /** @inheritdoc */
     public async fetchResources<TModel>(
-        resourceUrl: string,
+        resourceUrl: URL,
         formatResource: (resource: any) => TModel): Promise<TModel[]> {
-        const timestamp = Date.now();
-        const hash = crypto
-            .createHash("md5")
-            .update(`${timestamp}${this.privateKey}${this.publicKey}`)
-            .digest("hex");
+        let page: DataWrapper | undefined;
+        let models: TModel[] = [];
 
-        const urlObject = new URL(resourceUrl);
+        do {
+            const timestamp = Date.now();
+            const hash = crypto
+                .createHash("md5")
+                .update(`${timestamp}${this.privateKey}${this.publicKey}`)
+                .digest("hex");
 
-        urlObject.searchParams.set("ts", timestamp.toString());
-        urlObject.searchParams.set("apikey", this.publicKey);
-        urlObject.searchParams.set("hash", hash);
+            const urlObject = new URL(resourceUrl.toString());
 
-        return fetch(urlObject.toString())
-            .then(res => res.json())
-            .then(json => {
-                const wrapper = json as DataWrapper;
-                return wrapper.data.results.map((value: any) => formatResource(value));
-            });
+            urlObject.searchParams.set("ts", timestamp.toString());
+            urlObject.searchParams.set("apikey", this.publicKey);
+            urlObject.searchParams.set("hash", hash);
+
+            if (page) {
+                const offset = page.data.offset + page.data.count;
+                urlObject.searchParams.set("offset", offset.toString());
+            }
+
+            page = (await fetch(urlObject.toString())
+                .then(res => res.json())) as DataWrapper;
+
+            models = models.concat(page.data.results.map(value => formatResource(value)));
+        } while(page.data.count + page.data.offset < page.data.total);
+
+        return models;
     }
 }
