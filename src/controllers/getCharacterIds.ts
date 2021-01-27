@@ -8,7 +8,7 @@ import ICharacterService from "../services/characterService.interface";
  * @returns Controller function to be used in Express app
  */
 export default function getCharacterIds(characterService: ICharacterService) {
-    return async (_: Request, res: Response) => {
+    return async (_: Request | undefined, res: Response) => {
         const characters = await characterService.characters();
         const characterIds = characters.map(character => character.id);
 

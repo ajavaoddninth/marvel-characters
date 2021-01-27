@@ -27,7 +27,7 @@ export default class CharacterService implements ICharacterService {
         );
 
         // Expected item count is 1
-        return models.pop();
+        return models.pop()!;
     }
 
     private formatResourceToCharacter(resource: any): Character {

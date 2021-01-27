@@ -8,7 +8,7 @@ import RequestError from "../models/requestError";
  * @param res Response object
  * @param next Next function
  */
-export default function errorHandler(err: Error, _: Request, res: Response, next: NextFunction) {
+export default function errorHandler(err: Error, _: Request | undefined, res: Response, next: NextFunction) {
     if (err instanceof RequestError) {
         res.status(err.code).json({
             code: err.code,

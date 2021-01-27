@@ -9,13 +9,13 @@ import catchErrors from "../controllers/catchErrors";
 import getCharacterIds from "../controllers/getCharacterIds";
 import getCharacterById from "../controllers/getCharacterById";
 
-const marvelApiClient = new MarvelApiClient(config.PublicKey, config.PrivateKey);
-const characterService = new CharacterService(marvelApiClient, config.RootUrl, config.CharactersRelativeUrl);
+const marvelApiClient = new MarvelApiClient(config.publicKey, config.privateKey);
+const characterService = new CharacterService(marvelApiClient, config.rootUrl, config.charactersRelativeUrl);
 const characterRouter = express.Router();
 const cache = new Cache<string, any>();
 
 // Register Cache Middleware
-characterRouter.use(cacheRequest(config.RequestCacheDuration, cache));
+characterRouter.use(cacheRequest(config.requestCacheDuration, cache));
 
 // Register routes
 characterRouter.get("/", catchErrors(getCharacterIds(characterService)));
