@@ -1,12 +1,15 @@
 import express from "express";
 import getCharacter from "./controllers/GetCharacter";
 import getCharacterIds from "./controllers/GetCharacterIds";
-import MockCharacterService from "./services/MockCharacterService";
+import config from "./config";
+import CharacterService from "./services/CharacterService";
+import MarvelApiClient from "./services/MarvelApiClient";
 
 const app = express();
 const PORT = 8080;
 
-const characterService = new MockCharacterService();
+const marvelApiClient = new MarvelApiClient(config.PublicKey, config.PrivateKey);
+const characterService = new CharacterService(marvelApiClient, config.RootUrl, config.CharactersRelativeUrl);
 const characterRouter = express.Router();
 
 characterRouter.get("/", getCharacterIds(characterService));

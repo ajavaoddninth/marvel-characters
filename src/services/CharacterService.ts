@@ -5,8 +5,8 @@ import IMarvelApiClient from "./IMarvelApiClient";
 export default class CharacterService implements ICharacterService {
     constructor(
         private client: IMarvelApiClient,
-        private rootUrl: string = "http://gateway.marvel.com",
-        private charactersRelativeUrl: string = "/v1/public/characters") {}
+        private rootUrl: string,
+        private charactersRelativeUrl: string) {}
 
     /** @inheritdoc */
     public async characters(): Promise<Character[]> {

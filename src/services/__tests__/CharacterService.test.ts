@@ -50,7 +50,7 @@ describe("Get characters using the service", () => {
         const expectedUrl = new URL("http://gateway.marvel.com/v1/public/characters");
         expectedUrl.searchParams.set("limit", "100");
 
-        const sut = new CharacterService(marvelApiClient);
+        const sut = new CharacterService(marvelApiClient, "http://gateway.marvel.com", "/v1/public/characters");
 
         const actualResponse = await sut.characters();
 
@@ -77,7 +77,7 @@ describe("Get character by ID using the service", () => {
             description: "Description for Character 1"
         } as Character;
 
-        const sut = new CharacterService(marvelApiClient);
+        const sut = new CharacterService(marvelApiClient, "http://gateway.marvel.com", "/v1/public/characters");
 
         const actualResponse = await sut.characterById(1);
 

@@ -4,7 +4,7 @@ import crypto from "crypto";
 /**
  * Contains metadata about the call
  */
-export interface DataWrapper {
+interface DataWrapper {
     // The HTTP status code of the returned result
     code: number;
 
@@ -18,7 +18,7 @@ export interface DataWrapper {
 /**
  * Displays pagination information and an array of the results returned by the call
  */
-export interface DataContainer {
+interface DataContainer {
     // The requested offset (skipped results) of the call
     offset: number;
 
@@ -35,7 +35,7 @@ export interface DataContainer {
     results: any[];
 }
 
-export interface ErrorWrapper {
+interface ErrorWrapper {
     // The HTTP status code of the error
     code: number;
 
