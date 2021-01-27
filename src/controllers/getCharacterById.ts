@@ -8,7 +8,7 @@ import ICharacterService from "../services/characterService.interface";
  * @param characterService Service for Marvel characters
  * @returns Controller function to be used in Express app
  */
-export default function getCharacter(characterService: ICharacterService) {
+export default function getCharacterById(characterService: ICharacterService) {
     return async (req: Request, res: Response) => {
         const characterId = +req.params.characterId;
 

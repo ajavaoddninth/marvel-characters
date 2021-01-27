@@ -1,5 +1,5 @@
 import express from "express";
-import getCharacter from "./controllers/GetCharacter";
+import getCharacterById from "./controllers/getCharacterById";
 import getCharacterIds from "./controllers/getCharacterIds";
 import config from "./config";
 import CharacterService from "./services/characterService";
@@ -19,17 +19,17 @@ const characterRouter = express.Router();
 const cache = new Cache<string, any>();
 
 // Register Cache Middleware
-app.use(cacheRequest(CACHE_DURATION, cache));
+characterRouter.use(cacheRequest(CACHE_DURATION, cache));
 
 // Register routes
 characterRouter.get("/", catchErrors(getCharacterIds(characterService)));
 
-characterRouter.get("/:characterId", catchErrors(getCharacter(characterService)));
-
-app.use("/characters", characterRouter);
+characterRouter.get("/:characterId", catchErrors(getCharacterById(characterService)));
 
 // Register error handler
-app.use(errorHandler);
+characterRouter.use(errorHandler);
+
+app.use("/characters", characterRouter);
 
 app.listen(PORT, () => {
     console.log(`[INFO]: Server is running at https://localhost:${PORT}`);

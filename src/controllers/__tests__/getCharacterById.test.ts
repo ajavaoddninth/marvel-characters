@@ -1,5 +1,5 @@
 import Character from "../../models/character";
-import getCharacter from "../getCharacter";
+import getCharacterById from "../getCharacterById";
 import { Request } from "jest-express/lib/request";
 import { Response } from "jest-express/lib/response";
 import RequestError from "../../models/requestError";
@@ -26,7 +26,7 @@ describe("Get character by ID using the controller", () => {
             description: "Description for Character 1"
         } as Character);
 
-        const sut = getCharacter(characterService);
+        const sut = getCharacterById(characterService);
         req.setParams("characterId", "1");
 
         await sut(req, res);
@@ -40,7 +40,7 @@ describe("Get character by ID using the controller", () => {
     });
 
     it("should throw error given a non-integer ID", async () => {
-        const sut = getCharacter(characterService);
+        const sut = getCharacterById(characterService);
         req.setParams("characterId", "nonInteger");
 
         await expect(sut(req, res)).rejects.toThrow(new RequestError(400, "Character ID must be an integer."));
