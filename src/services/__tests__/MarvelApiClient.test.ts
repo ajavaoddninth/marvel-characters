@@ -1,27 +1,18 @@
-import fetchMock from "jest-fetch-mock";
+jest.mock("node-fetch");
+import fetch from "node-fetch";
+import { mocked } from "ts-jest";
 import Character from "../../models/Character";
 import MarvelApiClient from "../MarvelApiClient";
 import { EXPECTED_MODELS_FOR_MULTIPLE_PAGE_RESPONSE, EXPECTED_MODELS_FOR_SINGLE_PAGE_RESPONSE, MULTIPLE_PAGE_RESPONSE_PAGE_1, MULTIPLE_PAGE_RESPONSE_PAGE_2, MULTIPLE_PAGE_RESPONSE_PAGE_3, SINGLE_PAGE_RESPONSE } from "./setupData";
 
-fetchMock.enableMocks();
-
-beforeEach(() => {
-    fetchMock.resetMocks();
-});
-
 describe("Fetch resources using Marvel API", () => {
     let formatResource: jest.Mock<Character, [resource: any]>;
     let dateNowSpy: jest.SpyInstance<number, []>;
+    const fetchMock = mocked(fetch, true);
+    const { Response } = jest.requireActual("node-fetch");
 
     beforeAll(() => {
         dateNowSpy = jest.spyOn(Date, "now").mockImplementation(() => 1);
-    });
-
-    afterAll(() => {
-        dateNowSpy.mockRestore();
-    });
-
-    beforeEach(() => {
         formatResource = jest.fn((resource: any) => ({
             id: resource.id,
             name: resource.name,
@@ -29,8 +20,17 @@ describe("Fetch resources using Marvel API", () => {
         } as Character));
     });
 
+    afterAll(() => {
+        dateNowSpy.mockRestore();
+    });
+
+    beforeEach(() => {
+        formatResource.mockClear();
+        fetchMock.mockClear();
+    });
+
     it("should fetch resources from URL with a single page response", async () => {
-        fetchMock.mockResponseOnce(JSON.stringify(SINGLE_PAGE_RESPONSE));
+        fetchMock.mockResolvedValueOnce(new Response(JSON.stringify(SINGLE_PAGE_RESPONSE)));
 
         const sut = new MarvelApiClient("1234", "abcd");
 
@@ -48,9 +48,9 @@ describe("Fetch resources using Marvel API", () => {
 
     it("should fetch resources from URL with a multiple page response", async () => {
         fetchMock
-            .mockResponseOnce(JSON.stringify(MULTIPLE_PAGE_RESPONSE_PAGE_1))
-            .mockResponseOnce(JSON.stringify(MULTIPLE_PAGE_RESPONSE_PAGE_2))
-            .mockResponseOnce(JSON.stringify(MULTIPLE_PAGE_RESPONSE_PAGE_3));
+            .mockResolvedValueOnce(new Response(JSON.stringify(MULTIPLE_PAGE_RESPONSE_PAGE_1)))
+            .mockResolvedValueOnce(new Response(JSON.stringify(MULTIPLE_PAGE_RESPONSE_PAGE_2)))
+            .mockResolvedValueOnce(new Response(JSON.stringify(MULTIPLE_PAGE_RESPONSE_PAGE_3)));
 
         const sut = new MarvelApiClient("1234", "abcd");
 
@@ -65,9 +65,9 @@ describe("Fetch resources using Marvel API", () => {
 
     it("should fetch resources from URL with query parameters with a multiple page response", async () => {
         fetchMock
-            .mockResponseOnce(JSON.stringify(MULTIPLE_PAGE_RESPONSE_PAGE_1))
-            .mockResponseOnce(JSON.stringify(MULTIPLE_PAGE_RESPONSE_PAGE_2))
-            .mockResponseOnce(JSON.stringify(MULTIPLE_PAGE_RESPONSE_PAGE_3));
+            .mockResolvedValueOnce(new Response(JSON.stringify(MULTIPLE_PAGE_RESPONSE_PAGE_1)))
+            .mockResolvedValueOnce(new Response(JSON.stringify(MULTIPLE_PAGE_RESPONSE_PAGE_2)))
+            .mockResolvedValueOnce(new Response(JSON.stringify(MULTIPLE_PAGE_RESPONSE_PAGE_3)));
 
         const sut = new MarvelApiClient("1234", "abcd");
 

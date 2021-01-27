@@ -1,5 +1,6 @@
 import IMarvelApiClient from "./IMarvelApiClient";
 import crypto from "crypto";
+import fetch from "node-fetch";
 
 /**
  * Contains metadata about the call
