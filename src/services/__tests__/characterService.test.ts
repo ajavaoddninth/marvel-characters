@@ -1,5 +1,5 @@
-import Character from "../../models/Character";
-import CharacterService from "../CharacterService";
+import Character from "../../models/character";
+import CharacterService from "../characterService";
 
 let marvelApiClient: any;
 

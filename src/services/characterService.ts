@@ -1,8 +1,9 @@
-import Character from "../models/Character";
-import ICharacterService from "./ICharacterService";
-import IMarvelApiClient from "./IMarvelApiClient";
+import Character from "../models/character";
+import ICharacterService from "./characterService.interface";
+import IMarvelApiClient from "./marvelApiClient.interface";
 
 export default class CharacterService implements ICharacterService {
+    private limit = 100;
     constructor(
         private client: IMarvelApiClient,
         private rootUrl: string,
@@ -11,7 +12,7 @@ export default class CharacterService implements ICharacterService {
     /** @inheritdoc */
     public async characters(): Promise<Character[]> {
         const url = new URL(this.charactersRelativeUrl, this.rootUrl);
-        url.searchParams.set("limit", "100");
+        url.searchParams.set("limit", this.limit.toString());
         return this.client.fetchResources<Character>(
             url,
             this.formatResourceToCharacter

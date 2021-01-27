@@ -1,6 +1,7 @@
-import IMarvelApiClient from "./IMarvelApiClient";
+import IMarvelApiClient from "./marvelApiClient.interface";
 import crypto from "crypto";
 import fetch from "node-fetch";
+import RequestError from "../models/requestError";
 
 /**
  * Contains metadata about the call
@@ -74,10 +75,23 @@ export default class MarvelApiClient implements IMarvelApiClient {
                 urlObject.searchParams.set("offset", offset.toString());
             }
 
-            page = (await fetch(urlObject.toString())
-                .then(res => res.json())) as DataWrapper;
+            const response = await fetch(urlObject.toString()).catch(() => {
+                throw new RequestError(500, "An unknown error occurred while fetching requests.")
+            });
+
+            const content = await response.json().catch(() => {
+                throw new RequestError(500, "Response format from the Marvel API is unknown.")
+            });
+
+            if (!response.ok) {
+                const errorWrapper = content as ErrorWrapper;
+                throw new RequestError(errorWrapper.code, errorWrapper.status);
+            }
+
+            page = content as DataWrapper;
 
             models = models.concat(page.data.results.map(value => formatResource(value)));
+
         } while(page.data.count + page.data.offset < page.data.total);
 
         return models;

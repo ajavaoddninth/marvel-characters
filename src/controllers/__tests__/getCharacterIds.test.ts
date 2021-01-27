@@ -1,5 +1,5 @@
-import Character from "../../models/Character";
-import getCharacterIds from "../GetCharacterIds";
+import Character from "../../models/character";
+import getCharacterIds from "../getCharacterIds";
 import { Response } from "jest-express/lib/response";
 
 describe("Get character IDs using the controller", () => {

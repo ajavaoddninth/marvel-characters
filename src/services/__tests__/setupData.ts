@@ -1,4 +1,4 @@
-import Character from "../../models/Character";
+import Character from "../../models/character";
 
 export const SINGLE_PAGE_RESPONSE = {
     "code": 200,

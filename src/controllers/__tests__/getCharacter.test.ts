@@ -1,7 +1,8 @@
-import Character from "../../models/Character";
-import getCharacter from "../GetCharacter";
+import Character from "../../models/character";
+import getCharacter from "../getCharacter";
 import { Request } from "jest-express/lib/request";
 import { Response } from "jest-express/lib/response";
+import RequestError from "../../models/requestError";
 
 describe("Get character by ID using the controller", () => {
     let characterService: any;
@@ -42,7 +43,7 @@ describe("Get character by ID using the controller", () => {
         const sut = getCharacter(characterService);
         req.setParams("characterId", "nonInteger");
 
-        await expect(sut(req, res)).rejects.toThrowError("Character ID must be an integer.");
+        await expect(sut(req, res)).rejects.toThrow(new RequestError(400, "Character ID must be an integer."));
 
         expect(characterService.characterById).not.toBeCalled();
         expect(res.json).not.toBeCalled();

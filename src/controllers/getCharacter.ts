@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
-import ICharacterService from "../services/ICharacterService";
+import RequestError from "../models/requestError";
+import ICharacterService from "../services/characterService.interface";
 
 /**
  * Returns a controller function that gets a specific Marvel characters
@@ -12,7 +13,7 @@ export default function getCharacter(characterService: ICharacterService) {
         const characterId = +req.params.characterId;
 
         if (!Number.isInteger(characterId)) {
-            throw new Error("Character ID must be an integer.");
+            throw new RequestError(400, "Character ID must be an integer.");
         }
 
         const character = await characterService.characterById(characterId);

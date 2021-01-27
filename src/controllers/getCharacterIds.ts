@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import ICharacterService from "../services/ICharacterService";
+import ICharacterService from "../services/characterService.interface";
 
 /**
  * Returns a controller function that gets the Marvel characters
