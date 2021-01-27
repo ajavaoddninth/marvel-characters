@@ -1,0 +1,98 @@
+openapi: 3.0.1
+info:
+  title: Marvel Characters
+  description: A Marvel Characters API using the Marvel API
+  version: 1.0.0
+externalDocs:
+  description: Data provided by Marvel. © 2014 Marvel
+  url: http://marvel.com
+servers:
+- url: http://localhost:8080
+  description: Local API server
+tags:
+- name: characters
+  description: All about the Marvel characters
+paths:
+  /characters:
+    get:
+      tags:
+      - characters
+      summary: Gets character IDs
+      description: Fetches the IDs of all the Marvel Characters
+      operationId: getCharacterIds
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: number
+              example: [ 1011334, 1017100, 1009144, 1010699, 1009146 ]
+  /characters/{characterId}:
+    get:
+      tags:
+      - characters
+      summary: Find character by ID
+      description: Fetches the Marvel character with the given ID
+      operationId: getCharacterById
+      parameters:
+      - name: characterId
+        in: path
+        description: ID of Marvel character to retrieve
+        required: true
+        schema:
+          type: number
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Character'
+              example:
+                id: 1017100
+                name: 'A-Bomb (HAS)'
+                description: "Rick Jones has been Hulk's best bud since day one, but now he's more than a friend...he's a teammate! Transformed by a Gamma energy explosion, A-Bomb's thick, armored skin is just as strong and powerful as it is blue. And when he curls into action, he uses it like a giant bowling ball of destruction! "
+        400:
+          description: Invalid ID supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestError'
+              example:
+                code: 400
+                status: Character ID must be an integer.
+        404:
+          description: Character not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestError'
+              example:
+                code: 404
+                status: We couldn't find that character
+components:
+  schemas:
+    Character:
+      type: object
+      properties:
+        id:
+          type: number
+          description: The unique ID of the character resource
+        name:
+          type: string
+          description: The name of the character
+        description:
+          type: string
+          description: A short bio or description of the character
+    RequestError:
+      type: object
+      properties:
+        code:
+          type: number
+          description: The HTTP status code of the error
+        status:
+          type: string
+          description: A string description of the error

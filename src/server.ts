@@ -1,36 +1,16 @@
 import express from "express";
-import getCharacterById from "./controllers/getCharacterById";
-import getCharacterIds from "./controllers/getCharacterIds";
-import config from "./config";
-import CharacterService from "./services/characterService";
-import MarvelApiClient from "./services/marvelApiClient";
-import catchErrors from "./controllers/catchErrors";
-import errorHandler from "./middlewares/errorHandler";
-import { Cache } from "memory-cache";
-import cacheRequest from "./middlewares/cacheRequest";
+import swaggerUi from "swagger-ui-express";
+import yaml from "yamljs";
+import characterRouter from "./routes/character.routes";
 
-const PORT = 8080;
-const CACHE_DURATION = 172800; // 2 days
+const SERVER_PORT = 8080;
 
 const app = express();
-const marvelApiClient = new MarvelApiClient(config.PublicKey, config.PrivateKey);
-const characterService = new CharacterService(marvelApiClient, config.RootUrl, config.CharactersRelativeUrl);
-const characterRouter = express.Router();
-const cache = new Cache<string, any>();
-
-// Register Cache Middleware
-characterRouter.use(cacheRequest(CACHE_DURATION, cache));
-
-// Register routes
-characterRouter.get("/", catchErrors(getCharacterIds(characterService)));
-
-characterRouter.get("/:characterId", catchErrors(getCharacterById(characterService)));
-
-// Register error handler
-characterRouter.use(errorHandler);
+const swaggerDocument = yaml.load("./swagger.yaml");
 
 app.use("/characters", characterRouter);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-app.listen(PORT, () => {
-    console.log(`[INFO]: Server is running at http://localhost:${PORT}`);
+app.listen(SERVER_PORT, () => {
+    console.log(`[INFO]: Server is running at http://localhost:${SERVER_PORT}`);
 });
