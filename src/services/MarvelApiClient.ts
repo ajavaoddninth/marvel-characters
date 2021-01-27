@@ -1,9 +1,10 @@
 import IMarvelApiClient from "./IMarvelApiClient";
+import crypto from "crypto";
 
 /**
  * Contains metadata about the call
  */
-export interface DataWrapper<TModel> {
+export interface DataWrapper {
     // The HTTP status code of the returned result
     code: number;
 
@@ -11,13 +12,13 @@ export interface DataWrapper<TModel> {
     status: string;
 
     // The results returned by the call
-    data: DataContainer<TModel>
+    data: DataContainer
 }
 
 /**
  * Displays pagination information and an array of the results returned by the call
  */
-export interface DataContainer<TModel> {
+export interface DataContainer {
     // The requested offset (skipped results) of the call
     offset: number;
 
@@ -31,7 +32,7 @@ export interface DataContainer<TModel> {
     count: number;
 
     // The list of entities returned by the call
-    results: TModel[];
+    results: any[];
 }
 
 export interface ErrorWrapper {
@@ -43,8 +44,31 @@ export interface ErrorWrapper {
 }
 
 export default class MarvelApiClient implements IMarvelApiClient {
+    constructor(
+        private publicKey: string,
+        private privateKey: string) {}
+
     /** @inheritdoc */
-    public async fetchResources<TModel>(resourcePath: string, queryParams?: { [key: string]: string; }): Promise<TModel[]> {
-        throw new Error("Method not implemented.");
+    public async fetchResources<TModel>(
+        resourceUrl: string,
+        formatResource: (resource: any) => TModel): Promise<TModel[]> {
+        const timestamp = Date.now();
+        const hash = crypto
+            .createHash("md5")
+            .update(`${timestamp}${this.privateKey}${this.publicKey}`)
+            .digest("hex");
+
+        const urlObject = new URL(resourceUrl);
+
+        urlObject.searchParams.set("ts", timestamp.toString());
+        urlObject.searchParams.set("apikey", this.publicKey);
+        urlObject.searchParams.set("hash", hash);
+
+        return fetch(urlObject.toString())
+            .then(res => res.json())
+            .then(json => {
+                const wrapper = json as DataWrapper;
+                return wrapper.data.results.map((value: any) => formatResource(value));
+            });
     }
 }
